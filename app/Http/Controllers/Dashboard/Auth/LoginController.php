@@ -43,7 +43,7 @@ class LoginController extends Controller
                 'password'      => $request->validated('password')
             ], $request->has('remember_me'))) {
             toastr()->success(  "Logged In Suuccessfully"  );
-            return redirect()->route('dashboard.index');
+            return redirect()->route('dashboard.home');
         }
         toastr()->error(trans('auth.failed'));
         return redirect()->back();
