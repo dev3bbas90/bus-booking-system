@@ -24,8 +24,7 @@ class BookingRequest extends FormRequest
             'source_station_id'      => 'required|integer|different:end_station_id|exists:stations,id|exists:trip_stations,station_id,trip_id,'.$this->trip_id,
             'destination_station_id' => 'required|integer|exists:stations,id|exists:trip_stations,station_id,trip_id,'.$this->trip_id,
             'seat_id'                => ['required', 'integer',
-                Rule::exists('seats', 'id')
-                    ->where('bus_id', Trip::findOrFail($this->trip_id)?->bus_id)
+                                        Rule::exists('seats', 'id')->where('bus_id', Trip::findOrFail($this->trip_id)?->bus_id)
             ],
             'right_order' => 'in:1'
         ];

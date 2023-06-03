@@ -15,15 +15,18 @@ trait SeatsAvailability
             when($request->trip_id , function($query) use($request){
                 $query->where('trips.id' , $request->trip_id);
             })
+
             ->when($request->seat_id , function($query) use($request){
                 $query->where('seats.id' , $request->seat_id);
             })
+
             ->select(
                 'trips.id as id',
                 'buses.id as bus_id',
                 'buses.plate_number as plate_number',
                 'seats.id as seat_id',
-                DB::raw('IFNULL(bookings.booked, 0) as booked')
+                DB::raw('IFNULL(bookings.booked, 0) as booked'),
+                DB::raw("(SELECT CASE WHEN Count(id) > 0 THEN 1 ELSE 0 END from trip_stations where trip_stations.trip_id = trips.id and trip_stations.station_id between $source AND $destination ) as right_way ")
             )
             ->leftJoin('seats', 'seats.bus_id', '=', 'trips.bus_id')
             ->leftJoin('buses', 'buses.id', '=', 'trips.bus_id')
@@ -54,7 +57,7 @@ trait SeatsAvailability
                         GROUP BY
                             seat_id, trip_id, source_order, destination_order
                         HAVING
-                            booked > 0
+                            booked > 0 and source_order < destination_order
                     )
                     as bookings
                 "),
@@ -64,6 +67,7 @@ trait SeatsAvailability
                 }
             )
             ->groupBy('trips.id', 'seats.id')
+            ->having('right_way' , '>' , 0)
             ->get()
         ;
 

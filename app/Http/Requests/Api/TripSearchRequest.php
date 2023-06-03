@@ -26,7 +26,7 @@ class TripSearchRequest extends FormRequest
             'date'                      => 'required|date|after_or_equal:'.date('Y-m-d'),
             'source_station_id'         => 'required|integer|different:destination_station_id|exists:stations,id',
             'destination_station_id'    => 'required|integer|exists:stations,id',
-            // 'right_order'               => 'in:1'
+            'right_order'               => 'in:1'
         ];
     }
 
@@ -38,7 +38,7 @@ class TripSearchRequest extends FormRequest
         $this->merge([
             'source_order'      => $source_order,
             'destination_order' => $destination_order,
-            // 'right_order'       => $destination_order && $source_order && $destination_order > $source_order ? 1 : 0,
+            'right_order'       => !$this->trip_id ? 1 : ($destination_order && $source_order && $destination_order > $source_order ? 1 : 0),
         ]);
     }
 
