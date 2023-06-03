@@ -85,7 +85,7 @@ class BookingController extends ApiBaseController
 
     /**
      * @OA\Post(
-     * path="/api/bookings/book",
+     * path="/api/bookings/store",
      * description="book seat",
      * tags={"Bookings"},
      * security={{ "jwt": {} }} ,
@@ -123,7 +123,7 @@ class BookingController extends ApiBaseController
      *  )
      * )
     */
-    public function book(BookingRequest $request)
+    public function store(BookingRequest $request)
     {
         $booking = $this->interface->book($request);
         if($booking){
