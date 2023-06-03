@@ -119,6 +119,7 @@ class TripController extends ApiBaseController
      *    @OA\JsonContent(
      *       required={"source","destination","date"},
      *       @OA\Property(property="trip_id"                , type="interger", format="text", example="1"),
+     *       @OA\Property(property="seat_id"                , type="interger", format="text"),
      *       @OA\Property(property="source_station_id"      , type="interger", format="text", example="1"),
      *       @OA\Property(property="destination_station_id" , type="interger", format="text", example="3"),
      *       @OA\Property(property="date"                   , type="string"  , format="date", example="2023-06-02")

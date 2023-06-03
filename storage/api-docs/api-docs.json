@@ -531,6 +531,10 @@
                                         "format": "text",
                                         "example": "1"
                                     },
+                                    "seat_id": {
+                                        "type": "interger",
+                                        "format": "text"
+                                    },
                                     "source_station_id": {
                                         "type": "interger",
                                         "format": "text",

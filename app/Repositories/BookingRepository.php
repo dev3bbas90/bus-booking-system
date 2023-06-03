@@ -18,9 +18,9 @@ class BookingRepository extends BaseRepository implements BookingInterface
     public function book(Request $request)
     {
         try {
-            $seat = $this->SeatsAvailability($request);
+            $is_booked = $this->SeatsAvailabilityV2($request);
             // if seat not booked in this period
-            if($seat && $seat?->booked == 0){
+            if($is_booked !== -1 && $is_booked === 0){
                 $booking = $this->model->create([
                     'user_id'              => auth('api')->id(),
                     'trip_id'              => $request->trip_id,

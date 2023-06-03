@@ -24,8 +24,8 @@ class TripRepository extends BaseRepository implements TripInterface
 
     public function available_seats(Request $request)
     {
-        $trips = $this->SeatsAvailability($request);
-        return $this->handleTripSeats($trips);
+        $trips = $this->SeatsAvailabilityV2($request , 'object');
+        return $trips;
     }
 
     public function handleTripSeats($trips)

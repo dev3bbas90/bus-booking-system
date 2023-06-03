@@ -2,7 +2,9 @@
 
 namespace App\Http\Traits;
 
+use App\Models\Booking;
 use App\Models\Trip;
+use App\Models\TripStation;
 use Illuminate\Support\Facades\DB;
 
 trait SeatsAvailability
@@ -75,6 +77,100 @@ trait SeatsAvailability
             return $trips->first();
         }
         return $trips->where('booked' , 0)->groupBy('id');
+    }
+
+    public function SeatsAvailabilityV2($request , $response_type = 'object')
+    {
+        $source         =   $request->source      ?? $request->source_station_id ;
+        $destination    =   $request->destination ?? $request->destination_station_id ;
+        $trip_id        =   $request->trip_id;
+        $date           =   $request->date;
+        $seat_id        =   $request->seat_id;
+
+        // get trip stations that matches query stations and trip id (wanted reservation)
+        $trip_stations = TripStation::when($trip_id , function($station) use($trip_id) {
+            $station->where('trip_id' , $trip_id);
+        })
+        ->whereRaw("date(arrive_time) = '$date'")->whereBetween('station_id' , [$source,$destination])
+        ;
+
+        $trips = Trip::whereIn('id' , $trip_stations->pluck('trip_id') -> toArray())->get();
+
+        // get start order and end order for stations to check if any seat reserved between them
+        $min_line_order = $trip_stations->min('order');
+        $max_line_order = $trip_stations->max('order');
+
+        // check any seat reserved between 2 selected points
+        $bookings = Booking::
+            whereBetween('source_order'      ,  [$min_line_order , $max_line_order-1])
+            ->orWhereBetween('destination_order' ,  [$min_line_order+1 , $max_line_order])
+        ->get(['trip_id' , 'seat_id']);
+
+
+        // if you query particular seat return it only
+        /*
+            response in this case
+            -1 => not found in trip
+            1 => booked
+            0 => available
+        */
+        if( $trip_id && $seat_id ){
+            $trip     = $trips->first();
+            $bus      = $trip?->bus;
+            $is_found = $bus?->seats?->find($seat_id);
+
+            if(!$is_found){
+                return $response_type == 'value' ? -1 : [];
+            }
+
+            $is_booked  =  $bookings->where('trip_id' , $trip_id)->where('seat_id' , $seat_id)->count();
+            if($response_type == 'value'){
+                return $is_booked ? 1 : 0;
+            }
+            elseif($is_booked){
+                return [];
+            }
+            return [
+                "id"              => $trip->id,
+                "bus_id"          => $trip->bus_id,
+                "plate_number"    => $bus?->plate_number,
+                "available_seats" => [
+                    'seat_id'     => $seat_id,
+                    "code"        => 'Seat-' . sprintf("%02d", $seat_id)
+                ]
+            ];
+        }
+
+        // loop trips bus seats and match booked seats
+        $response = [];
+        foreach ($trips as $trip) {
+            $bus  =  $trip->bus;
+            $seats  =  $bus->seats()
+            ->when($seat_id , function($seat) use($seat_id) {
+                $seat->where('id' , $seat_id);
+            })
+            ->pluck('id')->toArray();
+            $available_seats = [];
+            foreach ($seats as $seat_id) {
+                if(!$bookings->where('trip_id' , $trip->id)->where('seat_id' , $seat_id)->count()){
+                    $available_seats[] = [
+                        'seat_id' => $seat_id,
+                        "code"    => 'Seat-' . sprintf("%02d", $seat_id)
+                    ];
+                }
+            }
+
+            // if there's no seats available so trips complete so dont return trip
+            if(count($available_seats)){
+                $response[]           = [
+                    "id"              => $trip->id,
+                    "bus_id"          => $trip->bus_id,
+                    "plate_number"    => $bus?->plate_number,
+                    "available_seats" => $available_seats,
+                ];
+            }
+        }
+        return $response;
     }
 }
 
