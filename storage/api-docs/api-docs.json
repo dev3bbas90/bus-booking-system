@@ -260,13 +260,13 @@
                 ]
             }
         },
-        "/api/bookings/book": {
+        "/api/bookings/store": {
             "post": {
                 "tags": [
                     "Bookings"
                 ],
                 "description": "book seat",
-                "operationId": "6a7cdf33f70e0ebc233a261cc3ca4481",
+                "operationId": "22516e968bdc8293ffb072c75d47c319",
                 "requestBody": {
                     "description": "booking paramters (trip_id ,seat_id ,  source_station_id , destination_station_id  )",
                     "required": true,
