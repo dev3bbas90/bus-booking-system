@@ -45,7 +45,11 @@ For Example:
    
 <pre><code>run npm install & npm run dev</code></pre>
 
-2- Serve Project on your port
+2- build and fill database 
+   
+<pre><code>php artisan migrate --seed</code></pre>
+
+3- Serve Project on your port
    
 <pre><code>php artisan serve --port=1234</code></pre>
 
