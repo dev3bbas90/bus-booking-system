@@ -38,7 +38,7 @@ class TripSeeder extends Seeder
             $start   = date('Y-m-d H:i:s',strtotime($arrive . "+1 hour"));
             $arrive  = date('Y-m-d H:i:s',strtotime($start . "+15 minutes"));
 
-            $trip->trip_stations_line()->create([
+            $trip->line_stations()->create([
                 'station_id'    => $station_id,
                 'order'         => ++ $i,
                 'arrive_time'   => $start,

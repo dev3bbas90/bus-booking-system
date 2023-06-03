@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use EloquentFilter\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Trip extends Model
 {
-    use HasFactory;
+    use HasFactory, Filterable;
 
     protected $fillable = [
         'bus_id',
@@ -33,7 +34,7 @@ class Trip extends Model
      *
      * @return BelongsTo
      */
-    public function source_station()
+    public function source()
     {
         return $this->belongsTo(Station::class, 'source_station_id');
     }
@@ -43,7 +44,7 @@ class Trip extends Model
      *
      * @return BelongsTo
      */
-    public function destination_station()
+    public function destination()
     {
         return $this->belongsTo(Station::class, 'destination_station_id');
     }
@@ -53,7 +54,7 @@ class Trip extends Model
      *
      * @return HasMany
      */
-    public function trip_stations_line()
+    public function line_stations()
     {
         return $this->hasMany(TripStation::class)->orderBy('order', 'asc');
     }
@@ -63,7 +64,7 @@ class Trip extends Model
      *
      * @return HasManyThrough
      */
-    public function trip_stations():HasManyThrough
+    public function stations():HasManyThrough
     {
         return $this->hasManyThrough(Station::class , TripStation::class )->orderBy('trip_stations.order', 'asc');
     }

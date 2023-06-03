@@ -159,6 +159,7 @@ return [
         /*
          * Package Service Providers...
          */
+        EloquentFilter\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -168,6 +169,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+        App\Providers\RepositoryServiceProvider::class,
+
     ])->toArray(),
 
     /*

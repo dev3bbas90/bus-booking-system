@@ -12,8 +12,6 @@ class Seat extends Model
     use HasFactory;
     protected $fillable = [
         'bus_id',
-        'seat_code',
-        'status'
     ];
 
     /**
@@ -33,5 +31,10 @@ class Seat extends Model
    public function bookings(): HasMany
    {
        return $this->hasMany(Booking::class);
+   }
+
+   public function getSeatCodeAttribute()
+   {
+        return 'Seat-' . sprintf("%02d", $this->id);
    }
 }

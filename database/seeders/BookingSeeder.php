@@ -19,21 +19,14 @@ class BookingSeeder extends Seeder
         Booking::truncate();
         Schema::enableForeignKeyConstraints();
 
-        Booking::createMany([
-            [
+        for ($i = 1; $i <= 12; $i++) {
+            Booking::create([
                 'user_id'              => 1,
                 'trip_id'              => 1,
-                'seat_id'              => 1,
-                'source_order_id'      => 1,
-                'destination_order_id' => 2,
-            ],
-            [
-                'user_id'              => 2,
-                'trip_id'              => 1,
-                'seat_id'              => 1,
-                'source_order_id'      => 2,
-                'destination_order_id' => 3,
-            ]
-        ]);
+                'seat_id'              => $i,
+                'source_order'         => 1,
+                'destination_order'    => 3,
+            ]);
+        }
     }
 }

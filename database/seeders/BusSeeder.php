@@ -21,10 +21,9 @@ class BusSeeder extends Seeder
 
         $bus = Bus::factory(1)->create()[0];
 
-        for ($i = 1; $i <= 14; $i++) {
+        for ($i = 1; $i <= 12; $i++) {
             Seat::create([
                 'bus_id'    => $bus->id,
-                'seat_code' => 'Seat-' . sprintf("%02d", $i),
             ]);
         }
     }

@@ -63,7 +63,7 @@ class Booking extends Model
      *
      * @return BelongsTo
     */
-    public function source(): BelongsTo
+    public function source_station(): BelongsTo
     {
         return $this->belongsTo(TripStation::class, 'source_order' , 'order')->where('trip_stations.trip_id' , $this->trip_id);
     }
@@ -73,7 +73,7 @@ class Booking extends Model
      *
      * @return BelongsTo
     */
-    public function destination(): BelongsTo
+    public function destination_station(): BelongsTo
     {
         return $this->belongsTo(TripStation::class, 'destination_order' , 'order')->where('trip_stations.trip_id' , $this->trip_id);
     }
